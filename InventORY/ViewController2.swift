@@ -122,16 +122,98 @@ class ViewController2: UIViewController {
         """
     }
     
+    @IBAction func filterOptionsButtonTapped(_ sender: Any) {
+        showFilterOptions()
+    }
+    
+    @IBAction func resetFiltersTapped(_ sender: Any) {
+        clearFilters()
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "StorageCell", for: indexPath) as! StorageTableViewCell
+        
+        let rowData = tableData[indexPath.row]
+        
+        cell.configure(with: rowData)
+        
+        return cell
+    }
+    
+    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else { return }
+        
+        let location = gestureRecognizer.location(in: tableView)
+        if let indexPath = tableView.indexPathForRow(at: location),
+           let cell = tableView.cellForRow(at: indexPath) as? StorageTableViewCell {
+            
+            didLongPress(on: cell)
+        }
+    }
+    
+    private var selectedCell: StorageTableViewCell?
+
+    func didLongPress(on cell: StorageTableViewCell) {
+        selectedCell = cell
+
+        addBlurEffect()
+
+        UIView.animate(withDuration: 0.3) {
+            cell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        }
+
+        showActionSheet(for: cell)
+    }
+    
+    func showActionSheet(for cell: StorageTableViewCell) {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        let editAction = UIAlertAction(title: "Редактировать", style: .default) { _ in
+            self.removeBlurEffect()
+        }
+
+        let shareAction = UIAlertAction(title: "Поделиться", style: .default) { _ in
+            self.removeBlurEffect()
+        }
+
+        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+            self.removeBlurEffect()
+        }
+
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
+            self.removeBlurEffect()
+        }
+
+        alertController.addAction(editAction)
+        alertController.addAction(shareAction)
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    private var blurEffectView: UIVisualEffectView?
+
+    func addBlurEffect() {
+        let blurEffect = UIBlurEffect(style: .dark)
+        blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView?.frame = self.view.bounds
+        blurEffectView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.view.addSubview(blurEffectView!)
+    }
+
+    func removeBlurEffect() {
+        blurEffectView?.removeFromSuperview()
+        blurEffectView = nil
+    }
+    
     private func showStorageWindow() {
         oneMoreGreetLabel.text = "Storage"
         
         Task {
             do {
-                // Загружаем данные, если они еще не загружены
                 let tableData = self.tableData.isEmpty ? try await SupabaseManager.shared.fetchStorageData() : self.tableData
                 self.tableData = tableData
-                
-                
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
@@ -388,11 +470,6 @@ class ViewController2: UIViewController {
             self?.showCategoryFilterOptions()
         }
         
-        // Новая кнопка для сброса фильтров
-        let clearFiltersAction = UIAlertAction(title: "Clear Filters", style: .destructive) { [weak self] _ in
-            self?.clearFilters()
-        }
-        
         // Кнопка для отмены
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
@@ -401,10 +478,8 @@ class ViewController2: UIViewController {
         alertController.addAction(filterByQuantityAction)
         alertController.addAction(filterByBuyerAction)
         alertController.addAction(filterByCategoryAction)
-        alertController.addAction(clearFiltersAction) // Добавляем кнопку сброса фильтров
         alertController.addAction(cancelAction)
         
-        // Отображаем UIAlertController
         self.present(alertController, animated: true, completion: nil)
     }
     
@@ -418,8 +493,9 @@ class ViewController2: UIViewController {
                 self.tableData = fetchedData
                 
                 // Обновляем таблицу
-                updateTable(with: fetchedData)
-                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
                 print("Фильтры сброшены, отображены все данные.")
             } catch {
                 print("Ошибка при сбросе фильтров: \(error)")
@@ -434,7 +510,6 @@ class ViewController2: UIViewController {
             Task {
                 do {
                     self.tableData = try await SupabaseManager.shared.fetchStorageData()
-                    // После загрузки данных вызываем метод снова
                     self.showCategoryFilterOptions()
                 } catch {
                     print("Ошибка при загрузке данных: \(error)")
@@ -469,8 +544,10 @@ class ViewController2: UIViewController {
         // Фильтруем tableData по выбранной категории
         let filteredData = tableData.filter { $0["category"] == category }
         
-        // Обновляем таблицу с отфильтрованными данными
-        updateTable(with: filteredData)
+        self.tableData = filteredData
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     private func applyFilter(criterion: String) {
@@ -493,8 +570,10 @@ class ViewController2: UIViewController {
                     }
                 }
                 
-                // Обновление таблицы
-                updateTable(with: sortedData)
+                self.tableData = sortedData
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             } catch {
                 print("Ошибка при фильтрации данных: \(error)")
             }
@@ -506,7 +585,7 @@ class ViewController2: UIViewController {
             subview.removeFromSuperview()
         }
         
-        tableData = data
+        self.tableData = data
         
         showStorageWindow()
     }
@@ -564,18 +643,6 @@ class ViewController2: UIViewController {
 extension ViewController2: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableData.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "StorageCell", for: indexPath) as! StorageTableViewCell
-        
-        // Получаем данные для текущей строки
-        let rowData = tableData[indexPath.row]
-        
-        // Настраиваем ячейку
-        cell.configure(with: rowData)
-        
-        return cell
     }
 }
 
