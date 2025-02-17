@@ -10,13 +10,16 @@ class ViewController2: UIViewController {
     
     @IBOutlet weak var onLoadGreetLabel: UILabel!
     @IBOutlet weak var oneMoreGreetLabel: UILabel!
+    
     @IBOutlet weak var mainView: UIView!
     @IBOutlet weak var mainScrollView: UIScrollView!
     @IBOutlet weak var accountScrollView: UIScrollView!
-    @IBOutlet weak var storageScrollView: UIScrollView!
-    @IBOutlet weak var changeNameButton: UIButton!
+    @IBOutlet weak var storageScrollView: UIView!
+    
+    //@IBOutlet weak var changeNameButton: UIButton!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
+    @IBOutlet weak var tableView: UITableView!
     private var tableStackView: UIStackView!
     
     override func viewDidLoad() {
@@ -27,6 +30,10 @@ class ViewController2: UIViewController {
         oneMoreGreetLabel.text = "Hello, \(String(describing: self.userData["name"]))!"
         
         updateView()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        //tableView.register(UINib(nibName: "StorageTableViewCell", bundle: nil), forCellReuseIdentifier: "StorageCell")
     }
     
     @IBAction func segmentedControlChanged(_ sender: Any) {
@@ -116,6 +123,26 @@ class ViewController2: UIViewController {
     }
     
     private func showStorageWindow() {
+        oneMoreGreetLabel.text = "Storage"
+        
+        Task {
+            do {
+                // Загружаем данные, если они еще не загружены
+                let tableData = self.tableData.isEmpty ? try await SupabaseManager.shared.fetchStorageData() : self.tableData
+                self.tableData = tableData
+                
+                
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            } catch {
+                print("Ошибка при загрузке данных: \(error)")
+            }
+        }
+    }
+    
+    func showStorageWindowOld() {
         Task {
             do {
                 oneMoreGreetLabel.text = "Storage"
@@ -509,11 +536,12 @@ class ViewController2: UIViewController {
     }
     
     private func updateView() {
-        storageScrollView.isHidden = segmentedControl.selectedSegmentIndex != 0
-        mainScrollView.isHidden = segmentedControl.selectedSegmentIndex != 1
-        accountScrollView.isHidden = segmentedControl.selectedSegmentIndex != 2
-        
         let selectedSegment = segmentedControl.selectedSegmentIndex
+
+        storageScrollView.isHidden = selectedSegment != 0
+        mainScrollView.isHidden = selectedSegment != 1
+        accountScrollView.isHidden = selectedSegment != 2
+        
         switch selectedSegment {
         case 0:
             showStorageWindow()
@@ -526,9 +554,33 @@ class ViewController2: UIViewController {
         }
     }
     
-    @IBAction func ifLogOut() {
+    private func ifLogOut() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ViewController")
         self.navigationController?.setViewControllers([vc], animated: true)
+    }
+}
+
+extension ViewController2: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tableData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "StorageCell", for: indexPath) as! StorageTableViewCell
+        
+        // Получаем данные для текущей строки
+        let rowData = tableData[indexPath.row]
+        
+        // Настраиваем ячейку
+        cell.configure(with: rowData)
+        
+        return cell
+    }
+}
+
+extension ViewController2: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 40
     }
 }
