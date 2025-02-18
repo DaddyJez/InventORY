@@ -13,10 +13,12 @@ class StorageTableViewCell: UITableViewCell {
     @IBOutlet weak var quantityLabel: UILabel!
     @IBOutlet weak var buyerLabel: UILabel!
     
+    //weak var delegate: StorageTableViewCellDelegate?
+    var onMoreInfoTapped: (() -> Void)?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        // Выполняем на главном потоке
         DispatchQueue.main.async {
             let interaction = UIContextMenuInteraction(delegate: self)
             self.addInteraction(interaction)
@@ -34,8 +36,8 @@ class StorageTableViewCell: UITableViewCell {
 extension StorageTableViewCell: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let infoAction = UIAction(title: "More info", image: UIImage(systemName: "info.triangle")) { _ in
-                print("Поделиться")
+            let infoAction = UIAction(title: "More info", image: UIImage(systemName: "info.triangle")) { [weak self] _ in
+                self?.onMoreInfoTapped?()
             }
             
             let buyAction = UIAction(title: "Buy more", image: UIImage(systemName: "goforward.plus")) { _ in
@@ -50,4 +52,3 @@ extension StorageTableViewCell: UIContextMenuInteractionDelegate {
         }
     }
 }
-

@@ -118,7 +118,7 @@
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hi!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zjb-ek-rpM">
                                 <rect key="frame" x="16" y="55.000000000000007" width="361" height="20.333333333333336"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -216,15 +216,15 @@
                                         <rect key="frame" x="0.0" y="36" width="393" height="427.33333333333331"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StorageCell" rowHeight="31" id="EGA-wM-DPP" customClass="StorageTableViewCell" customModule="InventORY" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="50" width="393" height="31"/>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StorageCell" rowHeight="51" id="EGA-wM-DPP" customClass="StorageTableViewCell" customModule="InventORY" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="50" width="393" height="51"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EGA-wM-DPP" id="pmJ-Cz-eAu">
-                                                    <rect key="frame" x="0.0" y="0.0" width="393" height="31"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="393" height="51"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Articul" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZWd-q7-8cY">
-                                                            <rect key="frame" x="18" y="5" width="75" height="21"/>
+                                                            <rect key="frame" x="18" y="5" width="75" height="41"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="Wjw-BB-4OE"/>
                                                             </constraints>
@@ -233,7 +233,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UMH-bt-qxB">
-                                                            <rect key="frame" x="112" y="5" width="75" height="21"/>
+                                                            <rect key="frame" x="112" y="5" width="75" height="41"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="bOu-Yv-VAQ"/>
                                                             </constraints>
@@ -242,7 +242,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quant." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m7f-lU-MH6">
-                                                            <rect key="frame" x="206" y="5" width="75" height="21"/>
+                                                            <rect key="frame" x="206" y="5" width="75" height="41"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="v7i-dN-4L0"/>
                                                             </constraints>
@@ -251,7 +251,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Buyer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CcS-xz-aRu">
-                                                            <rect key="frame" x="300" y="5" width="75" height="21"/>
+                                                            <rect key="frame" x="300" y="5" width="75" height="41"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="1ha-w0-JuT"/>
                                                             </constraints>
@@ -315,7 +315,7 @@
                                             <constraint firstAttribute="height" constant="44" id="H75-n8-g26"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="tinted" title="Filter by"/>
+                                        <buttonConfiguration key="configuration" style="tinted" title="Filter by: criterion"/>
                                         <connections>
                                             <action selector="filterOptionsButtonTapped:" destination="Q4O-e1-Xv9" eventType="touchUpInside" id="vxj-SX-NA1"/>
                                         </connections>
@@ -348,7 +348,10 @@
                                             <constraint firstAttribute="height" constant="44" id="une-JZ-3EH"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="tinted" title="Store"/>
+                                        <buttonConfiguration key="configuration" style="tinted" title="New"/>
+                                        <connections>
+                                            <action selector="AddItemBurronTapped:" destination="Q4O-e1-Xv9" eventType="touchUpInside" id="bvZ-Jx-7kl"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -407,6 +410,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="FilterByButton" destination="cR1-BY-O3a" id="5eV-8g-7ka"/>
                         <outlet property="accountScrollView" destination="V8T-FY-Oof" id="XOY-Ay-HZD"/>
                         <outlet property="mainScrollView" destination="PJL-yv-1zc" id="zmo-EB-AaT"/>
                         <outlet property="mainView" destination="key-gT-S4D" id="9t4-ps-vqI"/>
@@ -420,6 +424,43 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MHg-LD-qk3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1032.824427480916" y="3.5211267605633805"/>
+        </scene>
+        <!--StoreViewController-->
+        <scene sceneID="D0v-Ah-rc0">
+            <objects>
+                <viewController storyboardIdentifier="StoreViewController" title="StoreViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="XWL-Wn-Gf5" customClass="StoreViewController" customModule="InventORY" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" restorationIdentifier="StoreViewController" id="1vl-LD-kpt">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Iu6-Ss-FpW">
+                                <rect key="frame" x="0.0" y="186" width="393" height="258"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="258" id="M5a-sU-OCn"/>
+                                </constraints>
+                            </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There u can provide purchasing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ilY-HP-lvu">
+                                <rect key="frame" x="76" y="55" width="241" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ozo-I4-NgT"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ilY-HP-lvu" firstAttribute="top" secondItem="1vl-LD-kpt" secondAttribute="topMargin" constant="-4" id="C1F-UB-vpg"/>
+                            <constraint firstItem="Iu6-Ss-FpW" firstAttribute="leading" secondItem="ozo-I4-NgT" secondAttribute="leading" id="hph-hr-Sad"/>
+                            <constraint firstItem="ilY-HP-lvu" firstAttribute="centerX" secondItem="1vl-LD-kpt" secondAttribute="centerX" id="kmb-T4-AKO"/>
+                            <constraint firstItem="ilY-HP-lvu" firstAttribute="centerX" secondItem="Iu6-Ss-FpW" secondAttribute="centerX" id="ruN-yL-LnU"/>
+                            <constraint firstItem="ozo-I4-NgT" firstAttribute="bottom" secondItem="Iu6-Ss-FpW" secondAttribute="bottom" constant="374" id="zzb-Kw-WGu"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5fh-h2-A1W" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1781" y="4"/>
         </scene>
     </scenes>
     <resources>

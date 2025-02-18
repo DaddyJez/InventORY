@@ -7,7 +7,7 @@ class ViewController2: UIViewController {
     var userData: [String: String] = [:]
     
     private var tableData: [[String: String]] = []
-    
+        
     @IBOutlet weak var onLoadGreetLabel: UILabel!
     @IBOutlet weak var oneMoreGreetLabel: UILabel!
     
@@ -19,6 +19,7 @@ class ViewController2: UIViewController {
     //@IBOutlet weak var changeNameButton: UIButton!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
+    @IBOutlet weak var filterByButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     private var tableStackView: UIStackView!
     
@@ -34,6 +35,13 @@ class ViewController2: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         //tableView.register(UINib(nibName: "StorageTableViewCell", bundle: nil), forCellReuseIdentifier: "StorageCell")
+    }
+    
+    @objc private func handleMoreInfoNotification(_ notification: Notification) {
+        guard let cell = notification.object as? StorageTableViewCell,
+              let indexPath = tableView.indexPath(for: cell) else { return }
+        
+        print("handleMoreInfoNotification: \(indexPath)")
     }
     
     @IBAction func segmentedControlChanged(_ sender: Any) {
@@ -134,81 +142,48 @@ class ViewController2: UIViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StorageCell", for: indexPath) as! StorageTableViewCell
         
         let rowData = tableData[indexPath.row]
-        
         cell.configure(with: rowData)
+        
+        cell.onMoreInfoTapped = { [weak self] in
+            self!.showDetails(cell: cell)
+        }
         
         return cell
     }
     
-    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-        guard gestureRecognizer.state == .began else { return }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)!
+        self.showDetails(cell: cell)
+    }
+    
+    private func showDetails(cell: UITableViewCell!) {
+        print("alertController Details")
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let rowData = tableData[indexPath.row]
+                    
+        let message = """
+        Articul: \(rowData["articul"] ?? "") Category: \(rowData["category"] ?? "")
+        Name: \(rowData["name"] ?? "")
+        Quantity: \(rowData["quantity"] ?? "")
+        Buyer: \(rowData["buyerName"] ?? "") (\(rowData["whoBought"] ?? ""))
+        Purchased at: \(rowData["dateOfBuy"] ?? "")
+        """
         
-        let location = gestureRecognizer.location(in: tableView)
-        if let indexPath = tableView.indexPathForRow(at: location),
-           let cell = tableView.cellForRow(at: indexPath) as? StorageTableViewCell {
-            
-            didLongPress(on: cell)
-        }
-    }
-    
-    private var selectedCell: StorageTableViewCell?
-
-    func didLongPress(on cell: StorageTableViewCell) {
-        selectedCell = cell
-
-        addBlurEffect()
-
-        UIView.animate(withDuration: 0.3) {
-            cell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-        }
-
-        showActionSheet(for: cell)
-    }
-    
-    func showActionSheet(for cell: StorageTableViewCell) {
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        let editAction = UIAlertAction(title: "Редактировать", style: .default) { _ in
-            self.removeBlurEffect()
-        }
-
-        let shareAction = UIAlertAction(title: "Поделиться", style: .default) { _ in
-            self.removeBlurEffect()
-        }
-
-        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
-            self.removeBlurEffect()
-        }
-
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
-            self.removeBlurEffect()
-        }
-
-        alertController.addAction(editAction)
-        alertController.addAction(shareAction)
-        alertController.addAction(deleteAction)
-        alertController.addAction(cancelAction)
-
+        let alertController = UIAlertController(
+            title: "Details",
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        
         present(alertController, animated: true, completion: nil)
-    }
-    
-    private var blurEffectView: UIVisualEffectView?
-
-    func addBlurEffect() {
-        let blurEffect = UIBlurEffect(style: .dark)
-        blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView?.frame = self.view.bounds
-        blurEffectView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.view.addSubview(blurEffectView!)
-    }
-
-    func removeBlurEffect() {
-        blurEffectView?.removeFromSuperview()
-        blurEffectView = nil
     }
     
     private func showStorageWindow() {
         oneMoreGreetLabel.text = "Storage"
+        filterByButton.setTitle("Filter by", for: .normal)
         
         Task {
             do {
@@ -496,6 +471,7 @@ class ViewController2: UIViewController {
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
+                filterByButton.setTitle("Filter by", for: .normal)
                 print("Фильтры сброшены, отображены все данные.")
             } catch {
                 print("Ошибка при сбросе фильтров: \(error)")
@@ -541,7 +517,7 @@ class ViewController2: UIViewController {
     }
 
     private func applyCategoryFilter(category: String) {
-        // Фильтруем tableData по выбранной категории
+        filterByButton.setTitle("Filter by: \(category)", for: .normal)
         let filteredData = tableData.filter { $0["category"] == category }
         
         self.tableData = filteredData
@@ -551,6 +527,7 @@ class ViewController2: UIViewController {
     }
     
     private func applyFilter(criterion: String) {
+        filterByButton.setTitle("Filter by: \(criterion)", for: .normal)
         Task {
             do {
                 let filteredData = try await SupabaseManager.shared.fetchStorageData()
@@ -636,6 +613,13 @@ class ViewController2: UIViewController {
     private func ifLogOut() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ViewController")
+        self.navigationController?.setViewControllers([vc], animated: true)
+    }
+    
+    @IBAction func AddItemBurronTapped(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "StoreViewController")
+        
         self.navigationController?.setViewControllers([vc], animated: true)
     }
 }
