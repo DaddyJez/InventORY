@@ -21,6 +21,23 @@ class SupabaseManager {
         DefaultsOperator = UserDefaultsManager()
     }
     
+    @MainActor
+    func fetchShopItems() async throws -> [ShopItem] {
+        do {
+            let response: [ShopItem] = try await client
+                .from("shopItems")
+                .select()
+                .execute()
+                .value
+            
+            print(response)
+            return response
+        } catch {
+            print("Ошибка при загрузке товаров: \(error)")
+            throw error
+        }
+    }
+    
     func fetchUsersData(identifier: String) async throws -> [[String: String]] {
         do {
             // Выполняем запрос к таблице "storage"
@@ -237,4 +254,13 @@ struct StorageItem: Decodable {
     struct UserData: Decodable {
         let name: String
     }
+}
+
+struct ShopItem: Decodable {
+    let id: Int
+    let articul: String
+    let category: String
+    let name: String
+    let cost: Int
+    let description: String
 }

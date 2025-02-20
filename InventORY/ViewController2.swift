@@ -618,9 +618,9 @@ class ViewController2: UIViewController {
     
     @IBAction func AddItemBurronTapped(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "StoreViewController")
-        
-        self.navigationController?.setViewControllers([vc], animated: true)
+        if let storeVC = storyboard.instantiateViewController(withIdentifier: "StoreViewController") as? StoreViewController {
+            self.navigationController?.pushViewController(storeVC, animated: true)
+        }
     }
 }
 
