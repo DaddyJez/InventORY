@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="f7n-3L-vDg">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -434,6 +433,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There u can provide purchasing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ilY-HP-lvu">
+                                <rect key="frame" x="76" y="63" width="241" height="38.666666666666657"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Articul" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QqP-zR-dB4">
+                                <rect key="frame" x="16" y="109.66666666666667" width="75" height="20.333333333333329"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20.329999999999998" id="Udw-Qg-ZlB"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="ZaK-Ya-Ung"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ll9-bc-qVa">
+                                <rect key="frame" x="99" y="109.66666666666667" width="191" height="20.333333333333329"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="191" id="ZJ3-8D-TAr"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cost" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="waf-1a-DG8">
+                                <rect key="frame" x="298" y="109.66666666666667" width="75" height="20.333333333333329"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="xSq-VO-9UH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Iu6-Ss-FpW">
                                 <rect key="frame" x="0.0" y="137" width="393" height="402"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -497,40 +530,28 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There u can provide purchasing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ilY-HP-lvu">
-                                <rect key="frame" x="76" y="63" width="241" height="38.666666666666657"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Articul" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QqP-zR-dB4">
-                                <rect key="frame" x="16" y="109.66666666666667" width="75" height="20.333333333333329"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Le7-6Y-abY">
+                                <rect key="frame" x="8" y="547" width="298" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="20.329999999999998" id="Udw-Qg-ZlB"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="ZaK-Ya-Ung"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="298" id="psl-Xj-hf2"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ll9-bc-qVa">
-                                <rect key="frame" x="99" y="109.66666666666667" width="191" height="20.333333333333329"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Filter by: criterion"/>
+                                <connections>
+                                    <action selector="filterStoreButtonTapped:" destination="XWL-Wn-Gf5" eventType="touchUpInside" id="QgO-Em-dsd"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pXl-rT-udB">
+                                <rect key="frame" x="314" y="547" width="71" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="191" id="ZJ3-8D-TAr"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="71" id="YQ8-fb-eAj"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cost" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="waf-1a-DG8">
-                                <rect key="frame" x="298" y="109.66666666666667" width="75" height="20.333333333333329"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="xSq-VO-9UH"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Reset">
+                                    <color key="baseForegroundColor" systemColor="systemRedColor"/>
+                                    <color key="baseBackgroundColor" systemColor="systemRedColor"/>
+                                </buttonConfiguration>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ozo-I4-NgT"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -538,19 +559,28 @@
                             <constraint firstItem="Ll9-bc-qVa" firstAttribute="top" secondItem="ilY-HP-lvu" secondAttribute="bottom" constant="8" id="5gs-nm-aA0"/>
                             <constraint firstItem="waf-1a-DG8" firstAttribute="top" secondItem="ilY-HP-lvu" secondAttribute="bottom" constant="8" id="6s9-yK-WHj"/>
                             <constraint firstItem="ilY-HP-lvu" firstAttribute="top" secondItem="1vl-LD-kpt" secondAttribute="topMargin" constant="4" id="C1F-UB-vpg"/>
+                            <constraint firstItem="ozo-I4-NgT" firstAttribute="bottom" secondItem="pXl-rT-udB" secondAttribute="bottom" constant="227" id="PYe-3K-hW1"/>
                             <constraint firstItem="QqP-zR-dB4" firstAttribute="top" secondItem="ilY-HP-lvu" secondAttribute="bottom" constant="8" id="Qrv-hh-uwC"/>
+                            <constraint firstItem="Le7-6Y-abY" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ozo-I4-NgT" secondAttribute="leading" symbolic="YES" id="UNd-or-LjV"/>
                             <constraint firstItem="QqP-zR-dB4" firstAttribute="leading" secondItem="ozo-I4-NgT" secondAttribute="leading" constant="16" id="XCz-u0-HPq"/>
+                            <constraint firstItem="pXl-rT-udB" firstAttribute="top" secondItem="Le7-6Y-abY" secondAttribute="top" id="dzf-lD-7bh"/>
                             <constraint firstItem="Iu6-Ss-FpW" firstAttribute="leading" secondItem="ozo-I4-NgT" secondAttribute="leading" id="hph-hr-Sad"/>
                             <constraint firstItem="Ll9-bc-qVa" firstAttribute="leading" secondItem="QqP-zR-dB4" secondAttribute="trailing" constant="8" symbolic="YES" id="kgJ-i2-mjd"/>
                             <constraint firstItem="ilY-HP-lvu" firstAttribute="centerX" secondItem="1vl-LD-kpt" secondAttribute="centerX" id="kmb-T4-AKO"/>
+                            <constraint firstItem="Le7-6Y-abY" firstAttribute="top" secondItem="Iu6-Ss-FpW" secondAttribute="bottom" constant="8" symbolic="YES" id="mQO-kb-fBs"/>
                             <constraint firstItem="ozo-I4-NgT" firstAttribute="trailing" secondItem="waf-1a-DG8" secondAttribute="trailing" constant="20" id="n7w-Pr-Eyf"/>
+                            <constraint firstItem="pXl-rT-udB" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Le7-6Y-abY" secondAttribute="trailing" constant="8" symbolic="YES" id="pma-Lp-7eY"/>
+                            <constraint firstItem="ozo-I4-NgT" firstAttribute="trailing" secondItem="pXl-rT-udB" secondAttribute="trailing" constant="8" id="q2h-od-Pzz"/>
+                            <constraint firstItem="pXl-rT-udB" firstAttribute="bottom" secondItem="Le7-6Y-abY" secondAttribute="bottom" id="rIh-5Z-CB7"/>
                             <constraint firstItem="ilY-HP-lvu" firstAttribute="centerX" secondItem="Iu6-Ss-FpW" secondAttribute="centerX" id="ruN-yL-LnU"/>
                             <constraint firstItem="Iu6-Ss-FpW" firstAttribute="top" secondItem="QqP-zR-dB4" secondAttribute="bottom" constant="7" id="s8k-9F-hJE"/>
                             <constraint firstItem="waf-1a-DG8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ll9-bc-qVa" secondAttribute="trailing" constant="8" symbolic="YES" id="uIK-Fq-JA7"/>
+                            <constraint firstItem="pXl-rT-udB" firstAttribute="leading" secondItem="Le7-6Y-abY" secondAttribute="trailing" constant="8" symbolic="YES" id="zWa-1m-GC9"/>
                             <constraint firstItem="ozo-I4-NgT" firstAttribute="bottom" secondItem="Iu6-Ss-FpW" secondAttribute="bottom" constant="279" id="zzb-Kw-WGu"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="filterStoreButton" destination="Le7-6Y-abY" id="82l-qV-Q2c"/>
                         <outlet property="tableView" destination="Iu6-Ss-FpW" id="2gC-A6-LXJ"/>
                     </connections>
                 </viewController>

@@ -21,23 +21,7 @@ class SupabaseManager {
         DefaultsOperator = UserDefaultsManager()
     }
     
-    @MainActor
-    func fetchShopItems() async throws -> [ShopItem] {
-        do {
-            let response: [ShopItem] = try await client
-                .from("shopItems")
-                .select()
-                .execute()
-                .value
-            
-            print(response)
-            return response
-        } catch {
-            print("Ошибка при загрузке товаров: \(error)")
-            throw error
-        }
-    }
-    
+    //MARK: USER OPERATIONS
     func fetchUsersData(identifier: String) async throws -> [[String: String]] {
         do {
             // Выполняем запрос к таблице "storage"
@@ -74,6 +58,7 @@ class SupabaseManager {
         }
     }
     
+    //MARK: STORAGE OPERATIONS
     func fetchStorageData() async throws -> [[String: String]] {
         do {
             // Выполняем запрос к таблице "storage" с JOIN на таблицу "users"
@@ -83,31 +68,18 @@ class SupabaseManager {
                 .execute()
                 .value // Используем .value для получения декодированного результата
             
-            print(response)
-
             // Преобразуем данные в [[String: String]]
             var result: [[String: String]] = []
             for item in response {
-                let category = item.category
-                let articul = item.articul
-                let name = item.name
-                let quantity = item.quantity
-                let whoBought = item.whoBought
-                let dateOfBuy = item.dateOfBuy
-                
-                let buyerName = item.users?.name ?? "Unknown"
-                                
-                // Добавляем в результат
                 result.append([
-                    "category": category,
-                    "articul": articul,
-                    "name": name,
-                    "quantity": String(quantity),
-                    "whoBought": whoBought,
-                    "buyerName": buyerName,
-                    "dateOfBuy": dateOfBuy,
+                    "category": item.category,
+                    "articul": item.articul,
+                    "name": item.name,
+                    "quantity": String(item.quantity),
+                    "whoBought": item.whoBought,
+                    "buyerName": item.users?.name ?? "Unknown",
+                    "dateOfBuy": item.dateOfBuy,
                 ])
-                
             }
 
             return result
@@ -137,7 +109,6 @@ class SupabaseManager {
         }
     }
 
-    // Метод для входа пользователя
     func login(enteredLogin: String, enteredPassword: String) async -> Bool? {
         do {
             let response: [UserData] = try await client
@@ -230,6 +201,34 @@ class SupabaseManager {
                 generatedIDs.insert(newID)
                 return newID
             }
+        }
+    }
+    
+    //MARK: STORE ITEMS
+    @MainActor
+    func fetchShopItems() async throws -> [[String: String]] {
+        do {
+            let response: [ShopItem] = try await client
+                .from("shopItems")
+                .select()
+                .execute()
+                .value
+            
+            var result: [[String: String]] = []
+            for item in response {
+                result.append([
+                    "articul": item.articul,
+                    "category": item.category,
+                    "name": item.name,
+                    "cost": String(item.cost),
+                    "description": item.description,
+                    "id": String(item.id)
+                ])
+            }
+            return result
+        } catch {
+            print("Ошибка при загрузке товаров: \(error)")
+            throw error
         }
     }
 }
