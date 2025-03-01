@@ -551,6 +551,21 @@
                                     <color key="baseForegroundColor" systemColor="systemRedColor"/>
                                     <color key="baseBackgroundColor" systemColor="systemRedColor"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="resetStoreFilterTapped:" destination="XWL-Wn-Gf5" eventType="touchUpInside" id="M6J-kb-8WS"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iut-jt-cPV">
+                                <rect key="frame" x="8" y="599" width="377" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Iun-kY-2Qt"/>
+                                    <constraint firstAttribute="width" constant="377" id="WyI-hh-CZT"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="New item"/>
+                                <connections>
+                                    <action selector="addItemButtonTapped:" destination="XWL-Wn-Gf5" eventType="touchUpInside" id="72p-ow-kbm"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ozo-I4-NgT"/>
@@ -558,6 +573,7 @@
                         <constraints>
                             <constraint firstItem="Ll9-bc-qVa" firstAttribute="top" secondItem="ilY-HP-lvu" secondAttribute="bottom" constant="8" id="5gs-nm-aA0"/>
                             <constraint firstItem="waf-1a-DG8" firstAttribute="top" secondItem="ilY-HP-lvu" secondAttribute="bottom" constant="8" id="6s9-yK-WHj"/>
+                            <constraint firstItem="ozo-I4-NgT" firstAttribute="trailing" secondItem="iut-jt-cPV" secondAttribute="trailing" constant="8" id="7B4-Sa-pNS"/>
                             <constraint firstItem="ilY-HP-lvu" firstAttribute="top" secondItem="1vl-LD-kpt" secondAttribute="topMargin" constant="4" id="C1F-UB-vpg"/>
                             <constraint firstItem="ozo-I4-NgT" firstAttribute="bottom" secondItem="pXl-rT-udB" secondAttribute="bottom" constant="227" id="PYe-3K-hW1"/>
                             <constraint firstItem="QqP-zR-dB4" firstAttribute="top" secondItem="ilY-HP-lvu" secondAttribute="bottom" constant="8" id="Qrv-hh-uwC"/>
@@ -565,6 +581,7 @@
                             <constraint firstItem="QqP-zR-dB4" firstAttribute="leading" secondItem="ozo-I4-NgT" secondAttribute="leading" constant="16" id="XCz-u0-HPq"/>
                             <constraint firstItem="pXl-rT-udB" firstAttribute="top" secondItem="Le7-6Y-abY" secondAttribute="top" id="dzf-lD-7bh"/>
                             <constraint firstItem="Iu6-Ss-FpW" firstAttribute="leading" secondItem="ozo-I4-NgT" secondAttribute="leading" id="hph-hr-Sad"/>
+                            <constraint firstItem="iut-jt-cPV" firstAttribute="top" secondItem="Le7-6Y-abY" secondAttribute="bottom" constant="8" id="jcM-IG-tsJ"/>
                             <constraint firstItem="Ll9-bc-qVa" firstAttribute="leading" secondItem="QqP-zR-dB4" secondAttribute="trailing" constant="8" symbolic="YES" id="kgJ-i2-mjd"/>
                             <constraint firstItem="ilY-HP-lvu" firstAttribute="centerX" secondItem="1vl-LD-kpt" secondAttribute="centerX" id="kmb-T4-AKO"/>
                             <constraint firstItem="Le7-6Y-abY" firstAttribute="top" secondItem="Iu6-Ss-FpW" secondAttribute="bottom" constant="8" symbolic="YES" id="mQO-kb-fBs"/>
@@ -574,6 +591,7 @@
                             <constraint firstItem="pXl-rT-udB" firstAttribute="bottom" secondItem="Le7-6Y-abY" secondAttribute="bottom" id="rIh-5Z-CB7"/>
                             <constraint firstItem="ilY-HP-lvu" firstAttribute="centerX" secondItem="Iu6-Ss-FpW" secondAttribute="centerX" id="ruN-yL-LnU"/>
                             <constraint firstItem="Iu6-Ss-FpW" firstAttribute="top" secondItem="QqP-zR-dB4" secondAttribute="bottom" constant="7" id="s8k-9F-hJE"/>
+                            <constraint firstItem="iut-jt-cPV" firstAttribute="leading" secondItem="ozo-I4-NgT" secondAttribute="leading" constant="8" id="sUy-J2-RVV"/>
                             <constraint firstItem="waf-1a-DG8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ll9-bc-qVa" secondAttribute="trailing" constant="8" symbolic="YES" id="uIK-Fq-JA7"/>
                             <constraint firstItem="pXl-rT-udB" firstAttribute="leading" secondItem="Le7-6Y-abY" secondAttribute="trailing" constant="8" symbolic="YES" id="zWa-1m-GC9"/>
                             <constraint firstItem="ozo-I4-NgT" firstAttribute="bottom" secondItem="Iu6-Ss-FpW" secondAttribute="bottom" constant="279" id="zzb-Kw-WGu"/>
@@ -594,7 +612,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

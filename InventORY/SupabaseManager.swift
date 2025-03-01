@@ -155,45 +155,60 @@ class SupabaseManager {
     }
     
     func isLoginExists(login: String) async -> Bool {
-            do {
-                let response: [UserData] = try await client
-                    .from("users")
-                    .select()
-                    .eq("login", value: login)
-                    .execute()
-                    .value
+        do {
+            let response: [UserData] = try await client
+                .from("users")
+                .select()
+                .eq("login", value: login)
+                .execute()
+                .value
 
-                return response.isEmpty
-            } catch {
-                print("Ошибка при проверке логина: \(error)")
-                return false
-            }
+            return response.isEmpty
+        } catch {
+            print("Ошибка при проверке логина: \(error)")
+            return false
         }
+    }
     
-    func getAllUserIDs() async -> Set<String> {
-            do {
+    func getAllIDs(table: String, col: String) async -> Set<String> {
+        do {
+            switch table {
+            case "users":
                 let response: [UserData] = try await client
-                    .from("users")
-                    .select("identifier")
+                    .from(table)
+                    .select(col)
                     .execute()
                     .value
 
                 let ids = response.map { $0.identifier }
                 return Set(ids)
-            } catch {
-                print("Ошибка при получении идентификаторов: \(error)")
-                return []
+            case "shopItems":
+                let response: [ShopItem] = try await client
+                    .from(table)
+                    .select(col)
+                    .execute()
+                    .value
+
+                let ids = response.map { $0.articul }
+                return Set(ids)
+            default:
+                preconditionFailure("Неверно указана таблица")
             }
+            
+        } catch {
+            print("Ошибка при получении идентификаторов: \(error)")
+            return []
         }
+    }
     
-    func generateUniqueID() async -> String {
-        var generatedIDs: Set<String> = await getAllUserIDs()
+    func generateUniqueID(table: String = "users", column: String = "identifier", length: Int = 6) async -> String {
+        var generatedIDs: Set<String> = await getAllIDs(table: table, col: column)
 
         let characters = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"
         let charactersArray = Array(characters)
 
         while true {
-            let newID = (0..<6).map { _ in
+            let newID = (0..<length).map { _ in
                 charactersArray.randomElement()!
             }.reduce("", { String($0) + String($1) })
 
@@ -222,13 +237,34 @@ class SupabaseManager {
                     "name": item.name,
                     "cost": String(item.cost),
                     "description": item.description,
-                    "id": String(item.id)
                 ])
             }
             return result
         } catch {
             print("Ошибка при загрузке товаров: \(error)")
             throw error
+        }
+    }
+    
+    func addStoreItem(category: String, name: String, cost: String, description: String) async -> Bool {
+        do {
+            let articul = await generateUniqueID(table: "shopItems", column: "articul", length: 4)
+            let response = try await client
+                .from("shopItems")
+                .insert([
+                    "articul": articul,
+                    "category": category,
+                    "name": name,
+                    "cost": cost,
+                    "description": description
+                ])
+                .execute()
+
+            print("Пользователь зарегистрирован: \(response)")
+            return true
+        } catch {
+            print("Ошибка при регистрации пользователя: \(error)")
+            return false
         }
     }
 }
@@ -256,7 +292,6 @@ struct StorageItem: Decodable {
 }
 
 struct ShopItem: Decodable {
-    let id: Int
     let articul: String
     let category: String
     let name: String

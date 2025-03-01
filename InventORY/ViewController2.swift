@@ -159,15 +159,17 @@ class ViewController2: UIViewController {
         let rowData = tableData[indexPath.row]
                     
         let message = """
-        Articul: \(rowData["articul"] ?? "") Category: \(rowData["category"] ?? "")
-        Name: \(rowData["name"] ?? "")
         Quantity: \(rowData["quantity"] ?? "")
+        
+        Articul: \(rowData["articul"] ?? "") 
+        Category: \(rowData["category"] ?? "")
+        
         Buyer: \(rowData["buyerName"] ?? "") (\(rowData["whoBought"] ?? ""))
         Purchased at: \(rowData["dateOfBuy"] ?? "")
         """
         
         let alertController = UIAlertController(
-            title: "Details",
+            title: rowData["name"],
             message: message,
             preferredStyle: .alert
         )
@@ -307,32 +309,26 @@ class ViewController2: UIViewController {
     
     private func applyFilter(criterion: String) {
         filterByButton.setTitle("Filter by: \(criterion)", for: .normal)
-        Task {
-            do {
-                let filteredData = try await SupabaseManager.shared.fetchStorageData()
-                
-                let sortedData: [[String: String]]
-                if criterion == "category" {
-                    sortedData = filteredData.filter { $0["category"] != nil }
-                } else if criterion == "quantity" {
-                    sortedData = filteredData.sorted {
-                        guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
-                        return Int(firstValue)! < Int(secondValue)!
-                    }
-                } else {
-                    sortedData = filteredData.sorted {
-                        guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
-                        return firstValue < secondValue
-                    }
-                }
-                
-                self.tableData = sortedData
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            } catch {
-                print("Ошибка при фильтрации данных: \(error)")
+        let filteredData = self.tableData
+        
+        let sortedData: [[String: String]]
+        if criterion == "category" {
+            sortedData = filteredData.filter { $0["category"] != nil }
+        } else if criterion == "quantity" {
+            sortedData = filteredData.sorted {
+                guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
+                return Int(firstValue)! < Int(secondValue)!
             }
+        } else {
+            sortedData = filteredData.sorted {
+                guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
+                return firstValue < secondValue
+            }
+        }
+        
+        self.tableData = sortedData
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
     }
     

@@ -22,6 +22,7 @@ class StoreViewController: UIViewController {
     }
 
     private func setupTableView() {
+        filterStoreButton.setTitle("Filter by", for: .normal)
         tableView.delegate = self
         tableView.dataSource = self
         //tableView.register(UINib(nibName: "ShopItemTableViewCell", bundle: nil), forCellReuseIdentifier: "ShopCell")
@@ -44,34 +45,31 @@ class StoreViewController: UIViewController {
     
     private func applyFilter(criterion: String) {
         filterStoreButton.setTitle("Filter by: \(criterion)", for: .normal)
-        Task {
-            do {
-                let filteredData = try await SupabaseManager.shared.fetchStorageData()
-                
-                let sortedData: [[String: String]]
-                if criterion == "category" {
-                    sortedData = filteredData.filter { $0["category"] != nil }
-                } else {
-                    sortedData = filteredData.sorted {
-                        guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
-                        return firstValue < secondValue
-                    }
-                }
-                
-                self.tableData = sortedData
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            } catch {
-                print("Ошибка при фильтрации данных: \(error)")
+        let filteredData = self.tableData
+        
+        let sortedData: [[String: String]]
+        if criterion == "category" {
+            sortedData = filteredData.filter { $0["category"] != nil }
+        } else if criterion == "cost" {
+            sortedData = filteredData.sorted {
+                guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
+                return Int(firstValue)! < Int(secondValue)!
             }
+        } else {
+            sortedData = filteredData.sorted {
+                guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
+                return firstValue < secondValue
+            }
+        }
+        
+        self.tableData = sortedData
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
     }
     
     private func showCategoryFilterOptions() {
-        // Проверяем, загружены ли данные
         if tableData.isEmpty {
-            // Если данные не загружены, загружаем их
             Task {
                 do {
                     self.tableData = try await SupabaseManager.shared.fetchStorageData()
@@ -124,13 +122,8 @@ class StoreViewController: UIViewController {
         }
         
         // Кнопка для фильтрации по количеству
-        let filterByQuantityAction = UIAlertAction(title: "Quantity", style: .default) { [weak self] _ in
-            self?.applyFilter(criterion: "quantity")
-        }
-        
-        // Кнопка для фильтрации по покупателю
-        let filterByBuyerAction = UIAlertAction(title: "Buyer", style: .default) { [weak self] _ in
-            self?.applyFilter(criterion: "buyerName")
+        let filterByQuantityAction = UIAlertAction(title: "Cost", style: .default) { [weak self] _ in
+            self?.applyFilter(criterion: "cost")
         }
         
         // Кнопка для фильтрации по категории
@@ -144,33 +137,138 @@ class StoreViewController: UIViewController {
         // Добавляем все кнопки в UIAlertController
         alertController.addAction(filterByNameAction)
         alertController.addAction(filterByQuantityAction)
-        alertController.addAction(filterByBuyerAction)
         alertController.addAction(filterByCategoryAction)
         alertController.addAction(cancelAction)
         
         self.present(alertController, animated: true, completion: nil)
     }
     
+    private func clearStoreFilters() {
+        Task {
+            do {
+                let fetchedData = try await supabaseManager.fetchShopItems()
+                self.tableData = fetchedData
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+                filterStoreButton.setTitle("Filter by", for: .normal)
+            } catch {
+                print("Ошибка при сбросе фильтров: \(error)")
+            }
+        }
+    }
+    
+    private func provideAddingItem() {
+        let alertController = UIAlertController(title: "Add item", message: nil, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = "Category"
+        }
+        alertController.addTextField { textField in
+            textField.placeholder = "Name"
+        }
+        alertController.addTextField { textField in
+            textField.placeholder = "Cost"
+        }
+        alertController.addTextField { textField in
+            textField.placeholder = "Description"
+        }
+        alertController.addTextField { textField in
+            textField.placeholder = "Quantity to buy"
+        }
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            guard
+                let categoryToAdd = alertController.textFields?[0].text,
+                let nameToAdd = alertController.textFields?[1].text,
+                let costToAdd = alertController.textFields?[2].text,
+                let descriptionToAdd = alertController.textFields?[3].text,
+                let quantityToAdd = alertController.textFields?[4].text
+            else {
+                return
+            }
+            self.guardAddingItem(category: categoryToAdd, name: nameToAdd, cost: costToAdd, description: descriptionToAdd, quantity: Int(quantityToAdd) ?? 1)
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(okAction)
+        
+        present(alertController, animated: true)
+    }
+    
+    private func guardAddingItem(category: String, name: String, cost: String, description: String, quantity: Int) {
+        Task {
+            do {
+                if await SupabaseManager.shared.addStoreItem(category: category, name: name, cost: cost, description: description) {
+                    //MARK: THERE WILL BE BUYING THE ITEM
+                    loadData()
+                }
+            }
+        }
+    }
+    
     @IBAction func filterStoreButtonTapped(_ sender: Any) {
         showFilterStoreOptions()
     }
     
+    @IBAction func resetStoreFilterTapped(_ sender: Any) {
+        clearStoreFilters()
+    }
+    
+    @IBAction func addItemButtonTapped(_ sender: Any) {
+        provideAddingItem()
+    }
+    
+    private func onCellTapped(cell: UITableViewCell!) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let rowData = tableData[indexPath.row]
+        let message = """
+        Articul: \(rowData["articul"] ?? "") 
+        Category: \(rowData["category"] ?? "")
+                
+        \(rowData["description"] ?? "")
+        
+        Cost: \(rowData["cost"] ?? "")
+        """
+        let alertController = UIAlertController(
+            title: "Buy '\(rowData["name"] ?? "")'?",
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        let proceedAction = UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            
+            print("buying...")
+        }
+        
+        let cancelAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+        
+        alertController.addAction(proceedAction)
+        alertController.addAction(cancelAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
 }
 
 extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return shopItems.count
+        return tableData.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ShopCell", for: indexPath) as! ShopItemTableViewCell
-        let item = shopItems[indexPath.row]
+        let item = tableData[indexPath.row]
         
-        cell.articulLabel.text = item.articul
-        cell.nameLabel.text = item.name
-        cell.costLabel.text = "\(item.cost) $"
+        cell.articulLabel.text = item["articul"]
+        cell.nameLabel.text = item["name"]
+        cell.costLabel.text = "\(item["cost"] ?? "cost") $"
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)!
+        self.onCellTapped(cell: cell)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
