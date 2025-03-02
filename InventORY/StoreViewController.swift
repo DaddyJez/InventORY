@@ -173,21 +173,17 @@ class StoreViewController: UIViewController {
         alertController.addTextField { textField in
             textField.placeholder = "Description"
         }
-        alertController.addTextField { textField in
-            textField.placeholder = "Quantity to buy"
-        }
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
             guard
                 let categoryToAdd = alertController.textFields?[0].text,
                 let nameToAdd = alertController.textFields?[1].text,
                 let costToAdd = alertController.textFields?[2].text,
-                let descriptionToAdd = alertController.textFields?[3].text,
-                let quantityToAdd = alertController.textFields?[4].text
+                let descriptionToAdd = alertController.textFields?[3].text
             else {
                 return
             }
-            self.guardAddingItem(category: categoryToAdd, name: nameToAdd, cost: costToAdd, description: descriptionToAdd, quantity: Int(quantityToAdd) ?? 1)
+            self.guardAddingItem(category: categoryToAdd, name: nameToAdd, cost: costToAdd, description: descriptionToAdd)
         }
         alertController.addAction(cancelAction)
         alertController.addAction(okAction)
@@ -195,15 +191,48 @@ class StoreViewController: UIViewController {
         present(alertController, animated: true)
     }
     
-    private func guardAddingItem(category: String, name: String, cost: String, description: String, quantity: Int) {
+    private func guardAddingItem(category: String, name: String, cost: String, description: String) {
         Task {
             do {
-                if await SupabaseManager.shared.addStoreItem(category: category, name: name, cost: cost, description: description) {
-                    //MARK: THERE WILL BE BUYING THE ITEM
-                    loadData()
+                if let item: String? = await SupabaseManager.shared.addStoreItem(category: category, name: name, cost: cost, description: description) {
+                    await chooseQuantityToBuy(itemArticul: item!)
                 }
             }
         }
+    }
+    
+    private func chooseQuantityToBuy(itemArticul: String) async {
+        let alertController = UIAlertController(title: "How much do you want to buy?", message: nil, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = "Quantity"
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            guard
+                let quantToBuy = alertController.textFields?[0].text
+            else {
+                return
+            }
+            Task {
+                do {
+                    await self.provideBuying(itemArticul: itemArticul, quant: quantToBuy)
+                }
+            }
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(okAction)
+        
+        present(alertController, animated: true)
+        }
+    
+    private func provideBuying(itemArticul: String, quant: String? = "1") async {
+        if quant == "" {
+            await SupabaseManager.shared.buyItemFromStore(articul: itemArticul, quantity: "1")
+        } else {
+            await SupabaseManager.shared.buyItemFromStore(articul: itemArticul, quantity: quant!)
+        }
+        
     }
     
     @IBAction func filterStoreButtonTapped(_ sender: Any) {
@@ -235,10 +264,14 @@ class StoreViewController: UIViewController {
             preferredStyle: .alert
         )
         
-        let proceedAction = UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+        let proceedAction = UIAlertAction(title: "Yes", style: .default) {
+            [weak self] _ in
             guard let self = self else { return }
-            
-            print("buying...")
+            Task {
+                do {
+                    await chooseQuantityToBuy(itemArticul: rowData["articul"]!)
+                }
+            }
         }
         
         let cancelAction = UIAlertAction(title: "No", style: .cancel, handler: nil)

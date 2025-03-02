@@ -246,7 +246,7 @@ class SupabaseManager {
         }
     }
     
-    func addStoreItem(category: String, name: String, cost: String, description: String) async -> Bool {
+    func addStoreItem(category: String, name: String, cost: String, description: String) async -> String {
         do {
             let articul = await generateUniqueID(table: "shopItems", column: "articul", length: 4)
             let response = try await client
@@ -260,11 +260,65 @@ class SupabaseManager {
                 ])
                 .execute()
 
-            print("Пользователь зарегистрирован: \(response)")
-            return true
+            print("Товар добавлен: \(response)")
+            return articul
         } catch {
-            print("Ошибка при регистрации пользователя: \(error)")
-            return false
+            print("Ошибка при регистрации товара: \(error)")
+            return ""
+        }
+    }
+    
+    private func isItemInStorage(articul: String) async -> Int? {
+        do {
+            let response: [StorageItem] = try await client
+                .from("storage")
+                .select()
+                .eq("articul", value: articul)
+                .execute()
+                .value
+            
+            if response.first != nil {
+                return response.first?.quantity
+            } else {
+                return 0
+            }
+        } catch {
+            print("error with checking item in storage: \(error)")
+            return 0
+        }
+    }
+    
+    func buyItemFromStore(articul: String, quantity: String) async {
+        do {
+            let response: [ShopItem] = try await client
+                .from("shopItems")
+                .select()
+                .eq("articul", value: articul)
+                .execute()
+                .value
+            
+            if (response.first != nil) {
+                let userData = self.DefaultsOperator.loadUserData()
+                if let items = await isItemInStorage(articul: response.first!.articul)! as Int?, items > 0 {
+                    let insertResp = try await client.from("storage")
+                        .update(["quantity": String(items + Int(quantity)!)])
+                        .eq("articul", value: response.first!.articul)
+                        .execute()
+                } else {
+                    let insertResp = try await client
+                        .from("storage")
+                        .insert([
+                            "articul": response.first!.articul,
+                            "name": response.first!.name,
+                            "quantity": quantity,
+                            "whoBought": userData["identifier"],
+                            "category": response.first!.category
+                        ])
+                        .execute()
+                }
+            }
+        } catch {
+            print("error: \(error)")
         }
     }
 }
