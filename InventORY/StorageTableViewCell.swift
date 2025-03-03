@@ -13,6 +13,9 @@ class StorageTableViewCell: UITableViewCell {
     @IBOutlet weak var quantityLabel: UILabel!
     @IBOutlet weak var buyerLabel: UILabel!
     
+    weak var delegate: StorageItemDelegate?
+    var controller: UIViewController!
+    
     //weak var delegate: StorageTableViewCellDelegate?
     var onMoreInfoTapped: (() -> Void)?
     
@@ -25,23 +28,32 @@ class StorageTableViewCell: UITableViewCell {
         }
     }
     
-    func configure(with data: [String: String]) {
+    func configure(with data: [String: String], controller: UIViewController) {
         articulLabel.text = data["articul"]
         nameLabel.text = data["name"]
         quantityLabel.text = data["quantity"]
         buyerLabel.text = data["buyerName"]
+        self.controller = controller
     }
 }
 
 extension StorageTableViewCell: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let infoAction = UIAction(title: "More info", image: UIImage(systemName: "info.triangle")) { [weak self] _ in
-                self?.onMoreInfoTapped?()
-            }
+            let infoAction = UIAction(title: "Locations", image: UIImage(systemName: "info.triangle")) { [weak self] _ in
+                //self?.onMoreInfoTapped?()
+                
+                print("delegate to be next")
+                guard let self = self else { return }
+                self.delegate?.didTapLocate(for: self)
+                }
             
             let buyAction = UIAction(title: "Buy more", image: UIImage(systemName: "goforward.plus")) { _ in
-                print("Редактировать")
+                Task {
+                    do {
+                        await StorageAlert.shared.chooseQuantityToBuy(itemArticul: self.articulLabel.text!, controller: self.controller)
+                    }
+                }
             }
 
             let deleteAction = UIAction(title: "Remove", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in

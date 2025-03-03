@@ -66,9 +66,8 @@ class SupabaseManager {
                 .from("storage")
                 .select("category, articul, name, quantity, whoBought, dateOfBuy, users:users(name)")
                 .execute()
-                .value // Используем .value для получения декодированного результата
+                .value
             
-            // Преобразуем данные в [[String: String]]
             var result: [[String: String]] = []
             for item in response {
                 result.append([
@@ -88,7 +87,8 @@ class SupabaseManager {
             throw error
         }
     }
-
+    
+    //MARK: USER OPERATIONS
     func register(id: String, login: String, password: String) async -> Bool {
         do {
             let response = try await client
@@ -268,7 +268,7 @@ class SupabaseManager {
         }
     }
     
-    private func isItemInStorage(articul: String) async -> Int? {
+    private func isItemInStorage(articul: String) async -> (Int, Bool) {
         do {
             let response: [StorageItem] = try await client
                 .from("storage")
@@ -278,13 +278,31 @@ class SupabaseManager {
                 .value
             
             if response.first != nil {
-                return response.first?.quantity
+                return (response.first!.quantity, true)
             } else {
-                return 0
+                return (0, true)
             }
         } catch {
             print("error with checking item in storage: \(error)")
-            return 0
+            return (0, false)
+        }
+    }
+    
+    private func newStorageChange(type: String = "BUY", art: String, quant: String, price: String, personalName: String) async {
+        print("\(type) \(art) \(quant) \(price) \(personalName)")
+        do {
+            _ = try await client
+                .from("storageChanges")
+                .insert([
+                    "type": type,
+                    "itemArticul": art,
+                    "quantity": quant,
+                    "cost": price,
+                    "personalName": personalName,
+                ])
+                .execute()
+        } catch {
+            print(error)
         }
     }
     
@@ -299,26 +317,47 @@ class SupabaseManager {
             
             if (response.first != nil) {
                 let userData = self.DefaultsOperator.loadUserData()
-                if let items = await isItemInStorage(articul: response.first!.articul)! as Int?, items > 0 {
-                    let insertResp = try await client.from("storage")
-                        .update(["quantity": String(items + Int(quantity)!)])
-                        .eq("articul", value: response.first!.articul)
-                        .execute()
-                } else {
-                    let insertResp = try await client
-                        .from("storage")
-                        .insert([
-                            "articul": response.first!.articul,
-                            "name": response.first!.name,
-                            "quantity": quantity,
-                            "whoBought": userData["identifier"],
-                            "category": response.first!.category
-                        ])
-                        .execute()
+                let itemInStorage: (Int, Bool) = await isItemInStorage(articul: response.first!.articul)
+                if itemInStorage.1 {
+                    if itemInStorage.0 > 0  {
+                        _ = try await client.from("storage")
+                            .update(["quantity": String(itemInStorage.0 + Int(quantity)!)])
+                            .eq("articul", value: response.first!.articul)
+                            .execute()
+                    } else {
+                        _ = try await client
+                            .from("storage")
+                            .insert([
+                                "articul": response.first!.articul,
+                                "name": response.first!.name,
+                                "quantity": quantity,
+                                "whoBought": userData["identifier"],
+                                "category": response.first!.category
+                            ])
+                            .execute()
+                    }
+                    await newStorageChange(type: "BUY", art: response.first!.articul, quant: quantity, price: String((response.first!.cost * Int(quantity)!)), personalName: userData["identifier"]!)
                 }
             }
         } catch {
             print("error: \(error)")
+        }
+    }
+    
+    //MARK: LOCATION OPERATIONS
+    func fetchLocations(col: String, value: String) async -> [LocationItem] {
+        do {
+            let response: [LocationItem] = try await client
+                .from("itemList")
+                .select("ItemArticul, cabinet, condition, storage:storage(name),cabinets:cabinets(responsible)")
+                .eq(col, value: value)
+                .execute()
+                .value
+            print(response)
+            return response
+        } catch {
+            print(error)
+            return []
         }
     }
 }
@@ -351,4 +390,22 @@ struct ShopItem: Decodable {
     let name: String
     let cost: Int
     let description: String
+}
+
+struct LocationItem: Decodable {
+    let ItemArticul: String
+    let cabinet: Int
+    let condition: Bool
+
+    let storage: StorageItem?
+        
+    struct StorageItem: Decodable {
+        let name: String
+    }
+    
+    let cabinets: Cabinets?
+    
+    struct Cabinets: Decodable {
+        let responsible: String
+    }
 }

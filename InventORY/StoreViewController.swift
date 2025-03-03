@@ -11,7 +11,6 @@ class StoreViewController: UIViewController {
     @IBOutlet weak var filterStoreButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     
-    private var shopItems: [ShopItem] = []
     private var tableData: [[String: String]] = []
     private let supabaseManager = SupabaseManager.shared
 
@@ -201,38 +200,8 @@ class StoreViewController: UIViewController {
         }
     }
     
-    private func chooseQuantityToBuy(itemArticul: String) async {
-        let alertController = UIAlertController(title: "How much do you want to buy?", message: nil, preferredStyle: .alert)
-        alertController.addTextField { textField in
-            textField.placeholder = "Quantity"
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-            guard
-                let quantToBuy = alertController.textFields?[0].text
-            else {
-                return
-            }
-            Task {
-                do {
-                    await self.provideBuying(itemArticul: itemArticul, quant: quantToBuy)
-                }
-            }
-        }
-        alertController.addAction(cancelAction)
-        alertController.addAction(okAction)
-        
-        present(alertController, animated: true)
-        }
-    
-    private func provideBuying(itemArticul: String, quant: String? = "1") async {
-        if quant == "" {
-            await SupabaseManager.shared.buyItemFromStore(articul: itemArticul, quantity: "1")
-        } else {
-            await SupabaseManager.shared.buyItemFromStore(articul: itemArticul, quantity: quant!)
-        }
-        
+    func chooseQuantityToBuy(itemArticul: String) async {
+        await StorageAlert.shared.chooseQuantityToBuy(itemArticul: itemArticul, controller: self)
     }
     
     @IBAction func filterStoreButtonTapped(_ sender: Any) {

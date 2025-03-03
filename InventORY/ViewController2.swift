@@ -139,8 +139,10 @@ class ViewController2: UIViewController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StorageCell", for: indexPath) as! StorageTableViewCell
         
+        cell.delegate = self
+        
         let rowData = tableData[indexPath.row]
-        cell.configure(with: rowData)
+        cell.configure(with: rowData, controller: self)
         
         cell.onMoreInfoTapped = { [weak self] in
             self!.showDetails(cell: cell)
@@ -332,6 +334,7 @@ class ViewController2: UIViewController {
         }
     }
     
+    /*
     @objc func buyMoreButtonTapped(_ sender: UIButton) {
         if let containerStackView = sender.superview?.superview as? UIStackView,
            let rowStackView = containerStackView.arrangedSubviews.first as? UIStackView {
@@ -342,6 +345,7 @@ class ViewController2: UIViewController {
             print("Buy more tapped for item: \(selectedItem["articul"]!)")
             }
     }
+     */
     
     private func updateView() {
         let selectedSegment = segmentedControl.selectedSegmentIndex
@@ -385,5 +389,16 @@ extension ViewController2: UITableViewDataSource {
 extension ViewController2: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40
+    }
+}
+
+extension ViewController2: StorageItemDelegate {
+    func didTapLocate(for cell: StorageTableViewCell) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let locateVC = storyboard.instantiateViewController(withIdentifier: "LocateItemsViewController") as? LocateItemsViewController {
+            locateVC.criterion = (column: "ItemArticul", criterion: cell.articulLabel.text ?? "")
+            locateVC.count = Int(cell.quantityLabel.text ?? "1")
+            self.navigationController?.pushViewController(locateVC, animated: true)
+        }
     }
 }
