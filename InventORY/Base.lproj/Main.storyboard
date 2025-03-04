@@ -341,6 +341,9 @@
                                         </constraints>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Item location"/>
+                                        <connections>
+                                            <action selector="LocateItemsButtonTapped:" destination="Q4O-e1-Xv9" eventType="touchUpInside" id="uOt-tE-1Mo"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GQW-Ay-W4N">
                                         <rect key="frame" x="8" y="575.33333333333337" width="377" height="44"/>
@@ -532,7 +535,7 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Le7-6Y-abY">
-                                <rect key="frame" x="8" y="685" width="293" height="44"/>
+                                <rect key="frame" x="7.6666666666666572" y="685.33333333333337" width="293" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="567-LW-OFM"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="293" id="psl-Xj-hf2"/>
@@ -622,29 +625,29 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LocationCell" id="4rF-So-hUZ" customClass="LocationTableViewCell" customModule="InventORY" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="43"/>
+                                        <rect key="frame" x="0.0" y="50" width="393" height="42.666667938232422"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4rF-So-hUZ" id="yiw-kB-Zjz">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="42.666667938232422"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Item" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LuB-rz-AKi">
-                                                    <rect key="frame" x="16" y="11" width="161" height="21"/>
+                                                    <rect key="frame" x="15.999999999999996" y="11.000000000000002" width="33.666666666666657" height="20.666666666666671"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="161" id="jIy-n8-bNr"/>
+                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="250" id="jIy-n8-bNr"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Condition" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gAH-Qn-qfg">
-                                                    <rect key="frame" x="303" y="11" width="74" height="21"/>
+                                                    <rect key="frame" x="303.66666666666669" y="11.000000000000002" width="73.333333333333314" height="20.666666666666671"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cabinet" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WUg-Jr-45b">
-                                                    <rect key="frame" x="219" y="11" width="59" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Cabinet" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WUg-Jr-45b">
+                                                    <rect key="frame" x="219.66666666666666" y="11.000000000000002" width="58.999999999999972" height="20.666666666666671"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -652,11 +655,11 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="WUg-Jr-45b" firstAttribute="firstBaseline" secondItem="gAH-Qn-qfg" secondAttribute="firstBaseline" id="9U0-Px-18k"/>
-                                                <constraint firstItem="gAH-Qn-qfg" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="WUg-Jr-45b" secondAttribute="trailing" constant="8" symbolic="YES" id="9a3-BC-Qu0"/>
+                                                <constraint firstItem="gAH-Qn-qfg" firstAttribute="leading" secondItem="WUg-Jr-45b" secondAttribute="trailing" constant="25" id="9a3-BC-Qu0"/>
                                                 <constraint firstItem="LuB-rz-AKi" firstAttribute="centerY" secondItem="yiw-kB-Zjz" secondAttribute="centerY" id="JcC-vz-Qm3"/>
                                                 <constraint firstItem="LuB-rz-AKi" firstAttribute="firstBaseline" secondItem="WUg-Jr-45b" secondAttribute="firstBaseline" id="Kd6-S9-fVc"/>
                                                 <constraint firstItem="LuB-rz-AKi" firstAttribute="baseline" secondItem="WUg-Jr-45b" secondAttribute="baseline" id="NG4-Hp-FUT"/>
-                                                <constraint firstItem="WUg-Jr-45b" firstAttribute="leading" secondItem="LuB-rz-AKi" secondAttribute="trailing" constant="42" id="NrL-qi-yqj"/>
+                                                <constraint firstItem="WUg-Jr-45b" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="LuB-rz-AKi" secondAttribute="trailing" constant="12" id="NrL-qi-yqj"/>
                                                 <constraint firstItem="LuB-rz-AKi" firstAttribute="top" secondItem="yiw-kB-Zjz" secondAttribute="topMargin" id="P2g-Mi-mYt"/>
                                                 <constraint firstItem="LuB-rz-AKi" firstAttribute="leading" secondItem="yiw-kB-Zjz" secondAttribute="leadingMargin" constant="-4" id="dg2-Oc-TrX"/>
                                                 <constraint firstItem="WUg-Jr-45b" firstAttribute="centerY" secondItem="gAH-Qn-qfg" secondAttribute="centerY" id="sg0-mU-Sum"/>
@@ -680,8 +683,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Condition" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmj-15-T56">
-                                <rect key="frame" x="303" y="78" width="74" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cond." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmj-15-T56">
+                                <rect key="frame" x="331" y="78" width="46" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -693,12 +696,12 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="tinted" title="Identify item"/>
+                                <connections>
+                                    <action selector="identifyItemButtonTapped:" destination="Qxc-Bs-sDX" eventType="touchUpInside" id="G7m-E6-2Fa"/>
+                                </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cabinet" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nq4-zT-hfB">
-                                <rect key="frame" x="219" y="78" width="70" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="B6g-8S-u5a"/>
-                                </constraints>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cab." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nq4-zT-hfB">
+                                <rect key="frame" x="281.66666666666669" y="78" width="35.333333333333314" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>

@@ -30,7 +30,7 @@ class StoreViewController: UIViewController {
     private func loadData() {
         Task {
             do {
-                let tableData = try await supabaseManager.fetchShopItems()
+                let tableData = try await SupabaseManager.shared.fetchShopItems()
                 self.tableData = tableData
                 
                 DispatchQueue.main.async {
@@ -145,7 +145,7 @@ class StoreViewController: UIViewController {
     private func clearStoreFilters() {
         Task {
             do {
-                let fetchedData = try await supabaseManager.fetchShopItems()
+                let fetchedData = try await SupabaseManager.shared.fetchShopItems()
                 self.tableData = fetchedData
                 
                 DispatchQueue.main.async {

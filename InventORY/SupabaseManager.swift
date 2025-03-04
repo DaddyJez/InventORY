@@ -220,7 +220,6 @@ class SupabaseManager {
     }
     
     //MARK: STORE ITEMS
-    @MainActor
     func fetchShopItems() async throws -> [[String: String]] {
         do {
             let response: [ShopItem] = try await client
@@ -288,7 +287,7 @@ class SupabaseManager {
         }
     }
     
-    private func newStorageChange(type: String = "BUY", art: String, quant: String, price: String, personalName: String) async {
+    private func newStorageChange(type: String = "BUY", art: String, quant: String = "1", price: String = "0", personalName: String) async {
         print("\(type) \(art) \(quant) \(price) \(personalName)")
         do {
             _ = try await client
@@ -349,15 +348,58 @@ class SupabaseManager {
         do {
             let response: [LocationItem] = try await client
                 .from("itemList")
-                .select("ItemArticul, cabinet, condition, storage:storage(name),cabinets:cabinets(responsible)")
+                .select("rowid, ItemArticul, cabinet, condition, storage:storage(name),cabinets:cabinets(responsible)")
                 .eq(col, value: value)
                 .execute()
                 .value
-            print(response)
             return response
         } catch {
             print(error)
             return []
+        }
+    }
+    
+    func setConditionOnLocation(rowData: LocationItem, condition: Bool, userName: String) async {
+        do {
+            _ = try await client.from("itemList")
+                .update(["condition": condition])
+                .eq("rowid", value: rowData.rowid)
+                .execute()
+            await newStorageChange(type: "UPDATE \(!rowData.condition ? "TRUE" : "FALSE")", art: rowData.ItemArticul, personalName: userName)
+        } catch {
+            print(error)
+        }
+    }
+    
+    
+    func fetchCabinets() async throws -> [Cabinets] {
+        do {
+            let response: [Cabinets] = try await client
+                .from("cabinets")
+                .select("cabinetNum")
+                .execute()
+                .value
+            
+            return response
+        } catch {
+            print("Ошибка при загрузке товаров: \(error)")
+            throw error
+        }
+    }
+    
+    func locateItem(articul: String, cabinet: Int, userName: String) async {
+        do {
+            try await client
+                .from("itemList")
+                .insert([
+                    "ItemArticul": articul,
+                    "cabinet": String(cabinet),
+                    "condition": "TRUE"
+                ])
+                .execute()
+            await newStorageChange(type: "LOCATE", art: articul, personalName: userName)
+        } catch {
+            print(error)
         }
     }
 }
@@ -393,6 +435,7 @@ struct ShopItem: Decodable {
 }
 
 struct LocationItem: Decodable {
+    let rowid: Int
     let ItemArticul: String
     let cabinet: Int
     let condition: Bool
@@ -408,4 +451,8 @@ struct LocationItem: Decodable {
     struct Cabinets: Decodable {
         let responsible: String
     }
+}
+
+struct Cabinets: Decodable {
+    let cabinetNum: Int
 }

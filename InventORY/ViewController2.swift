@@ -333,19 +333,33 @@ class ViewController2: UIViewController {
             self.tableView.reloadData()
         }
     }
-    
-    /*
-    @objc func buyMoreButtonTapped(_ sender: UIButton) {
-        if let containerStackView = sender.superview?.superview as? UIStackView,
-           let rowStackView = containerStackView.arrangedSubviews.first as? UIStackView {
-            let index = rowStackView.tag
-            
-            let selectedItem = tableData[index]
-            
-            print("Buy more tapped for item: \(selectedItem["articul"]!)")
+    @IBAction func LocateItemsButtonTapped(_ sender: Any) {
+        print("there we will choose cabinet")
+        Task{
+            do {
+                let cabinets = try await SupabaseManager.shared.fetchCabinets()
+                
+                let alertController = UIAlertController(title: "Locate items", message: "Choose a cabinet", preferredStyle: .actionSheet)
+                
+                for cabinet in cabinets {
+                    let action = UIAlertAction(title: String(cabinet.cabinetNum), style: .default) { [weak self] _ in
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    if let locateVC = storyboard.instantiateViewController(withIdentifier: "LocateItemsViewController") as? LocateItemsViewController {
+                        locateVC.criterion = (column: "cabinet", criterion: String(cabinet.cabinetNum))
+                        locateVC.count = 0
+                        self?.navigationController?.pushViewController(locateVC, animated: true)
+                    }
+                    }
+                    alertController.addAction(action)
+                }
+                
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                alertController.addAction(cancelAction)
+                
+                self.present(alertController, animated: true, completion: nil)
             }
+        }
     }
-     */
     
     private func updateView() {
         let selectedSegment = segmentedControl.selectedSegmentIndex
