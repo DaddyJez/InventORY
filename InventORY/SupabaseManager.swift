@@ -64,7 +64,7 @@ class SupabaseManager {
             // Выполняем запрос к таблице "storage" с JOIN на таблицу "users"
             let response: [StorageItem] = try await client
                 .from("storage")
-                .select("category, articul, name, quantity, whoBought, dateOfBuy, users:users(name)")
+                .select("category, articul, name, quantity, whoBought, dateOfBuy, users:users(name), fullyIdentified")
                 .execute()
                 .value
             
@@ -78,6 +78,7 @@ class SupabaseManager {
                     "whoBought": item.whoBought,
                     "buyerName": item.users?.name ?? "Unknown",
                     "dateOfBuy": item.dateOfBuy,
+                    "fullyIdentified": String(item.fullyIdentified)
                 ])
             }
 
@@ -85,6 +86,17 @@ class SupabaseManager {
         } catch {
             print("Ошибка при получении данных из таблицы storage: \(error)")
             throw error
+        }
+    }
+    
+    func setItemState(art: String, state: String) async {
+        do {
+            try await client.from("storage")
+                .update(["fullyIdentified": state])
+                .eq("articul", value: art)
+                .execute()
+        } catch {
+            print(error)
         }
     }
     
@@ -331,7 +343,8 @@ class SupabaseManager {
                                 "name": response.first!.name,
                                 "quantity": quantity,
                                 "whoBought": userData["identifier"],
-                                "category": response.first!.category
+                                "category": response.first!.category,
+                                "fullyIdentified": "false"
                             ])
                             .execute()
                     }
@@ -366,6 +379,18 @@ class SupabaseManager {
                 .eq("rowid", value: rowData.rowid)
                 .execute()
             await newStorageChange(type: "UPDATE \(!rowData.condition ? "TRUE" : "FALSE")", art: rowData.ItemArticul, personalName: userName)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func relocateItem(rowId: String, newCabinet: Int) async {
+        print("relocateItem \(rowId) \(newCabinet)")
+        do {
+            try await client.from("itemList")
+                .update(["cabinet": String(newCabinet)])
+                .eq("rowid", value: rowId)
+                .execute()
         } catch {
             print(error)
         }
@@ -419,6 +444,7 @@ struct StorageItem: Decodable {
     let quantity: Int
     let whoBought: String
     let dateOfBuy: String
+    let fullyIdentified: Bool
     let users: UserData?
 
     struct UserData: Decodable {

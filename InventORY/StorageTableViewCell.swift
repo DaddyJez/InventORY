@@ -41,8 +41,6 @@ extension StorageTableViewCell: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let infoAction = UIAction(title: "Locations", image: UIImage(systemName: "info.triangle")) { [weak self] _ in
-                //self?.onMoreInfoTapped?()
-                
                 print("delegate to be next")
                 guard let self = self else { return }
                 self.delegate?.didTapLocate(for: self)
@@ -52,15 +50,18 @@ extension StorageTableViewCell: UIContextMenuInteractionDelegate {
                 Task {
                     do {
                         await StorageAlert.shared.chooseQuantityToBuy(itemArticul: self.articulLabel.text!, controller: self.controller)
+                        await SupabaseManager.shared.setItemState(art: self.articulLabel.text!, state: "false")
                     }
                 }
             }
-
+            
+            /*
             let deleteAction = UIAction(title: "Remove", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
                 print("Удалить")
             }
+            */
 
-            return UIMenu(title: "", children: [infoAction, buyAction, deleteAction])
+            return UIMenu(title: "", children: [infoAction, buyAction])
         }
     }
 }

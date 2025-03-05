@@ -168,6 +168,8 @@ class ViewController2: UIViewController {
         
         Buyer: \(rowData["buyerName"] ?? "") (\(rowData["whoBought"] ?? ""))
         Purchased at: \(rowData["dateOfBuy"] ?? "")
+        
+        \(rowData["fullyIdentified"] ?? "nil")
         """
         
         let alertController = UIAlertController(
@@ -229,6 +231,10 @@ class ViewController2: UIViewController {
             self?.applyFilter(criterion: "buyerName")
         }
         
+        let filterByIdentityAction = UIAlertAction(title: "Non-identified", style: .default) { [weak self] _ in
+            self?.applyFilter(criterion: "nonIdentified")
+        }
+        
         let filterByCategoryAction = UIAlertAction(title: "Category", style: .default) { [weak self] _ in
             self?.showCategoryFilterOptions()
         }
@@ -239,6 +245,7 @@ class ViewController2: UIViewController {
         alertController.addAction(filterByQuantityAction)
         alertController.addAction(filterByBuyerAction)
         alertController.addAction(filterByCategoryAction)
+        alertController.addAction(filterByIdentityAction)
         alertController.addAction(cancelAction)
         
         self.present(alertController, animated: true, completion: nil)
@@ -321,6 +328,8 @@ class ViewController2: UIViewController {
                 guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }
                 return Int(firstValue)! < Int(secondValue)!
             }
+        } else if criterion == "nonIdentified" {
+            sortedData = filteredData.filter { !Bool($0["fullyIdentified"]!)! }
         } else {
             sortedData = filteredData.sorted {
                 guard let firstValue = $0[criterion], let secondValue = $1[criterion] else { return false }

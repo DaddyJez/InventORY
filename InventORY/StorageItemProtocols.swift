@@ -11,3 +11,8 @@ import Foundation
 protocol StorageItemDelegate: AnyObject {
     func didTapLocate(for cell: StorageTableViewCell)
 }
+
+@MainActor
+protocol LocationItemDelegate: AnyObject {
+    func didTapRelocate(for cell: LocationTableViewCell)
+}

@@ -98,7 +98,14 @@ class LocateItemsViewController: UIViewController {
         self.present(alertController, animated: true, completion: nil)
     }
     
-    @IBAction func identifyItemButtonTapped(_ sender: Any) {
+    private func checkLocations(art: String) async {
+        print(art)
+        if self.tableData.count == self.count {
+            await SupabaseManager.shared.setItemState(art: art, state: "true")
+        }
+    }
+    
+    private func cabinetAlert(variant: String, rowId: Int = 0) {
         Task{
             do {
                 let cabinets = try await SupabaseManager.shared.fetchCabinets()
@@ -107,15 +114,31 @@ class LocateItemsViewController: UIViewController {
                 
                 for cabinet in cabinets {
                     let action = UIAlertAction(title: String(cabinet.cabinetNum), style: .default) { [weak self] _ in
-                        print("\(cabinet.cabinetNum) \(String(describing: self!.criterion!.criterion!))")
+                        switch variant {
+                        case "locate":
+                            print("\(cabinet.cabinetNum) \(String(describing: self!.criterion!.criterion!))")
+                            Task {
+                                do {
+                                    await SupabaseManager.shared.locateItem(articul: self!.criterion!.criterion!, cabinet: cabinet.cabinetNum, userName: (self?.userData["identifier"])!)
+                                    self!.tableData = await SupabaseManager.shared.fetchLocations(col: (self?.criterion?.column)!, value: (self?.criterion?.criterion)!)
+                                    await self!.checkLocations(art: (self?.criterion!.criterion!)!)
+                                    self?.tableView.reloadData()
+                                    await self?.setup()
+                                }
+                            }
+                        case "relocate":
                         Task {
                             do {
-                                await SupabaseManager.shared.locateItem(articul: self!.criterion!.criterion!, cabinet: cabinet.cabinetNum, userName: (self?.userData["identifier"])!)
-                                self!.tableData = await SupabaseManager.shared.fetchLocations(col: (self?.criterion?.column)!, value: (self?.criterion?.criterion)!)
+                                print("switch \(rowId) \(cabinet.cabinetNum)")
+                                await SupabaseManager.shared.relocateItem(rowId: String(rowId), newCabinet: cabinet.cabinetNum)
                                 self?.tableView.reloadData()
                                 await self?.setup()
                             }
                         }
+                        default:
+                            break
+                        }
+                        
                     }
                     alertController.addAction(action)
                 }
@@ -127,19 +150,31 @@ class LocateItemsViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func identifyItemButtonTapped(_ sender: Any) {
+        cabinetAlert(variant: "locate")
+    }
 }
 
-extension LocateItemsViewController: UITableViewDataSource, UITableViewDelegate {
+extension LocateItemsViewController: UITableViewDataSource, UITableViewDelegate, LocationItemDelegate {
+    func didTapRelocate(for cell: LocationTableViewCell) {
+        print("relocate \(cell.item.rowid)")
+        cabinetAlert(variant: "relocate", rowId: cell.item.rowid)
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableData.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell", for: indexPath) as! LocationTableViewCell
+        cell.delegate = self
         let item = tableData[indexPath.row]
         
-        cell.nameLabel.text = item.storage?.name
+        cell.nameLabel.text = "(\(item.rowid)) \(item.storage!.name)"
         cell.cabinetLabel.text = String(item.cabinet)
+        cell.item = item
+        
         if item.condition {
             cell.conditionLabel.text = "✅"
         } else {
